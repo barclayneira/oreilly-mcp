@@ -68,7 +68,9 @@ async def search_content(
     }
 
     if formats:
-        for i, fmt in enumerate(formats):
+        # formats can be a single string like "book" or a comma-separated list
+        fmt_list = [f.strip() for f in formats.split(",")]
+        for i, fmt in enumerate(fmt_list):
             params[f"formats[{i}]"] = fmt
 
     if topics:
@@ -160,6 +162,7 @@ async def get_book_info(
     Returns title, description, authors, chapters with reading times,
     and the book's table of contents.
     """
+    book_id = str(book_id)
     # Try book first, fall back to article
     content_type = _guess_content_type(book_id)
     types_to_try = ["book", "article"] if content_type == "auto" else [content_type]
@@ -235,6 +238,7 @@ async def read_chapter(
     from get_book_info's reference_id field.
     Returns the chapter text with HTML stripped for readability.
     """
+    book_id = str(book_id)
     content_type = _guess_content_type(book_id)
     types_to_try = ["book", "article"] if content_type == "auto" else [content_type]
 
@@ -293,6 +297,7 @@ async def get_table_of_contents(
     section-level headings and their hierarchy. More detailed than
     get_book_info's chapter list. Use book_id from search_content results.
     """
+    book_id = str(book_id)
     content_type = _guess_content_type(book_id)
     types_to_try = ["book", "article"] if content_type == "auto" else [content_type]
 
