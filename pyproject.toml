@@ -1,0 +1,16 @@
+[project]
+name = "oreilly-mcp"
+version = "0.2.0"
+description = "MCP server for the O'Reilly Learning Platform — search, browse, and read books, articles, and annotations"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+    "httpx",
+    "mcp[cli]",
+    "pyyaml",
+]
+
+[project.urls]
+Homepage = "https://github.com/barclayneira/oreilly-mcp"
+Issues = "https://github.com/barclayneira/oreilly-mcp/issues"
