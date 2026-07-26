@@ -153,7 +153,7 @@ async def search_content(
 
 @mcp.tool()
 async def get_book_info(
-    book_id: str,
+    book_id: str | int,
 ) -> Dict[str, Any]:
     """
     Get detailed metadata and table of contents for an O'Reilly book or article.
@@ -229,7 +229,7 @@ async def get_book_info(
 
 @mcp.tool()
 async def read_chapter(
-    book_id: str,
+    book_id: str | int,
     chapter_file: str,
 ) -> Dict[str, Any]:
     """
@@ -290,7 +290,7 @@ async def read_chapter(
 
 @mcp.tool()
 async def get_table_of_contents(
-    book_id: str,
+    book_id: str | int,
 ) -> Dict[str, Any]:
     """
     Get the detailed table of contents for an O'Reilly book, including
