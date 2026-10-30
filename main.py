@@ -54,7 +54,7 @@ async def search_content(
     subjects: Optional[List[str]] = None,
     page: int = 0,
     include_facets: bool = False,
-) -> Dict[str, Any]:
+) -> str:
     """
     Search O'Reilly content and return relevant results with essential metadata.
     Use include_facets=true to discover available topics and subjects for filtering.
@@ -94,9 +94,9 @@ async def search_content(
 
             if response.status_code == 400:
                 error_data = response.json()
-                return {
+                return yaml.dump({
                     "error": f"Invalid search parameters: {error_data.get('error', 'Unknown error')}"
-                }
+                })
 
             data = response.json()
 
@@ -144,9 +144,9 @@ async def search_content(
             return yaml.dump(output, sort_keys=False)
 
     except httpx.RequestError as e:
-        return {"error": f"Failed to connect to O'Reilly API: {str(e)}"}
+        return yaml.dump({"error": f"Failed to connect to O'Reilly API: {str(e)}"})
     except Exception as e:
-        return {"error": f"Unexpected error: {str(e)}"}
+        return yaml.dump({"error": f"Unexpected error: {str(e)}"})
 
 
 # ── Tool 2: Get book metadata and table of contents ──────────
@@ -154,7 +154,7 @@ async def search_content(
 @mcp.tool()
 async def get_book_info(
     book_id: str,
-) -> Dict[str, Any]:
+) -> str:
     """
     Get detailed metadata and table of contents for an O'Reilly book or article.
     Use a book_id (ISBN) from search_content results (the 'id' field).
@@ -182,7 +182,7 @@ async def get_book_info(
                     break
 
             if meta_resp is None or meta_resp.status_code != 200:
-                return {"error": f"Content not found: {book_id} (tried {types_to_try})"}
+                return yaml.dump({"error": f"Content not found: {book_id} (tried {types_to_try})"})
 
             meta = meta_resp.json()
 
@@ -222,7 +222,7 @@ async def get_book_info(
             return yaml.dump(result, sort_keys=False)
 
     except Exception as e:
-        return {"error": f"Failed to get book info: {str(e)}"}
+        return yaml.dump({"error": f"Failed to get book info: {str(e)}"})
 
 
 # ── Tool 3: Read chapter content ─────────────────────────────
@@ -291,7 +291,7 @@ async def read_chapter(
 @mcp.tool()
 async def get_table_of_contents(
     book_id: str,
-) -> Dict[str, Any]:
+) -> str:
     """
     Get the detailed table of contents for an O'Reilly book, including
     section-level headings and their hierarchy. More detailed than
@@ -315,7 +315,7 @@ async def get_table_of_contents(
                     break
 
             if resp is None or resp.status_code != 200:
-                return {"error": f"TOC not found for {book_id} (tried {types_to_try})"}
+                return yaml.dump({"error": f"TOC not found for {book_id} (tried {types_to_try})"})
 
             toc = resp.json()
 
@@ -340,7 +340,7 @@ async def get_table_of_contents(
             )
 
     except Exception as e:
-        return {"error": f"Failed to get TOC: {str(e)}"}
+        return yaml.dump({"error": f"Failed to get TOC: {str(e)}"})
 
 
 # ── Tool 5: Get user highlights/annotations ───────────────────
@@ -348,7 +348,7 @@ async def get_table_of_contents(
 @mcp.tool()
 async def get_annotations(
     page_size: int = 100,
-) -> Dict[str, Any]:
+) -> str:
     """
     Get your O'Reilly highlights and annotations (bookmarks, notes).
     Returns all saved highlights with the source book/chapter info.
@@ -364,7 +364,7 @@ async def get_annotations(
             )
 
             if resp.status_code != 200:
-                return {"error": f"Annotations not available (HTTP {resp.status_code})"}
+                return yaml.dump({"error": f"Annotations not available (HTTP {resp.status_code})"})
 
             data = resp.json()
 
@@ -385,7 +385,7 @@ async def get_annotations(
             )
 
     except Exception as e:
-        return {"error": f"Failed to get annotations: {str(e)}"}
+        return yaml.dump({"error": f"Failed to get annotations: {str(e)}"})
 
 
 # ── SSE Server (unchanged) ───────────────────────────────────
