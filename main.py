@@ -421,9 +421,11 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Run MCP SSE-based server")
-    parser.add_argument("--host", default="0.0.0.0", help="Host to bind to")
+    parser.add_argument("--host", default="127.0.0.1",
+                        help="Host to bind to (use 0.0.0.0 to expose on all interfaces; no auth!)")
     parser.add_argument("--port", type=int, default=8192, help="Port to listen on")
+    parser.add_argument("--debug", action="store_true", help="Enable Starlette debug mode")
     args = parser.parse_args()
 
-    starlette_app = create_starlette_app(mcp_server, debug=True)
+    starlette_app = create_starlette_app(mcp_server, debug=args.debug)
     uvicorn.run(starlette_app, host=args.host, port=args.port)
